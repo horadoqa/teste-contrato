@@ -274,21 +274,21 @@ jobs:
           fi
 
           cat > results/summary.json << EOF
-{
-  "cypress": "$CYPRESS",
-  "playwright": "$PLAYWRIGHT",
-  "robot": "$ROBOT",
-  "postman": "$POSTMAN",
-  "overall": "$OVERALL"
-}
-EOF
+            {
+              "cypress": "$CYPRESS",
+              "playwright": "$PLAYWRIGHT",
+              "robot": "$ROBOT",
+              "postman": "$POSTMAN",
+              "overall": "$OVERALL"
+            }
+            EOF
 
-          echo ""
-          echo "================================"
-          echo "Contract Test Summary"
-          echo "================================"
+                      echo ""
+                      echo "================================"
+                      echo "Contract Test Summary"
+                      echo "================================"
 
-          cat results/summary.json
+                      cat results/summary.json
 
 
       # ========================================================
