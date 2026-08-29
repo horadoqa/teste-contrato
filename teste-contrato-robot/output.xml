@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.1.1 (Python 3.10.12 on linux)" generated="2026-08-29T11:20:29.034725" rpa="false" schemaversion="5">
+<suite id="s1" name="Usuario" source="/home/rfahham/projetos/teste-contrato/teste-contrato-robot/tests/contrato/usuario.robot">
+<test id="s1-t1" name="Deve validar o contrato da API de usuário" line="10">
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2026-08-29T11:20:30.095737" level="INFO">GET Request : url=https://serverest.dev/usuarios/0uxuPY0cbmQhpEz1 
+ path_url=/usuarios/0uxuPY0cbmQhpEz1 
+ headers={'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'} 
+ body=None 
+ </msg>
+<msg time="2026-08-29T11:20:30.095920" level="INFO">GET Response : url=https://serverest.dev/usuarios/0uxuPY0cbmQhpEz1 
+ status=200, reason=OK 
+ headers={'access-control-allow-origin': '*', 'x-dns-prefetch-control': 'off', 'x-frame-options': 'SAMEORIGIN', 'strict-transport-security': 'max-age=15552000; includeSubDomains', 'x-download-options': 'noopen', 'x-content-type-options': 'nosniff', 'x-xss-protection': '1; mode=block', 'content-type': 'application/json; charset=utf-8', 'x-cloud-trace-context': 'fce42636711320757d0d4774bb0e75dc;o=1', 'date': 'Sat, 29 Aug 2026 14:20:33 GMT', 'server': 'Google Frontend', 'Content-Length': '148'} 
+ body={
+    "nome": "Fulano da Silva",
+    "email": "fulano@qa.com",
+    "password": "teste",
+    "administrador": "true",
+    "_id": "0uxuPY0cbmQhpEz1"
+} 
+ </msg>
+<msg time="2026-08-29T11:20:30.096154" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${BASE_URL}/usuarios/${USUARIO_ID}</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2026-08-29T11:20:29.662366" elapsed="0.433835"/>
+</kw>
+<kw name="Status Should Be" owner="RequestsLibrary">
+<arg>200</arg>
+<arg>${response}</arg>
+<doc>Fails if response status code is different than the expected.</doc>
+<status status="PASS" start="2026-08-29T11:20:30.096772" elapsed="0.000583"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-08-29T11:20:30.098893" level="INFO">${body} = {'nome': 'Fulano da Silva', 'email': 'fulano@qa.com', 'password': 'teste', 'administrador': 'true', '_id': '0uxuPY0cbmQhpEz1'}</msg>
+<var>${body}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-08-29T11:20:30.097986" elapsed="0.000952"/>
+</kw>
+<status status="PASS" start="2026-08-29T11:20:29.657220" elapsed="0.442036"/>
+</test>
+<status status="PASS" start="2026-08-29T11:20:29.036231" elapsed="1.063856"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="1" fail="0" skip="0" id="s1" name="Usuario">Usuario</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

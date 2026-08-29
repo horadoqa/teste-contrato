@@ -1,5 +1,3 @@
-Claro — abaixo está um artigo estruturado para publicação, usando o ServeRest como exemplo prático e mostrando as principais abordagens para Teste de Contrato com JSON Schema.
-
 # Teste de Contrato de APIs com JSON Schema: do conceito à automação
 
 Em projetos modernos, as APIs são responsáveis por conectar aplicações, serviços e sistemas diferentes. Quando um desses sistemas muda o formato de uma resposta sem avisar os consumidores, podemos ter um problema sério: funcionalidades que antes funcionavam deixam de funcionar.

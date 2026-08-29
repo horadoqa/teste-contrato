@@ -1,0 +1,89 @@
+{
+  "info": {
+    "_postman_id": "7f1b4c9a-3f12-4d4e-9a71-usuario-contrato",
+    "name": "Teste de Contrato - ServeRest",
+    "description": "Testes de contrato da API de usuários utilizando JSON Schema.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET - Buscar usuário",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://serverest.dev/usuarios/0uxuPY0cbmQhpEz1",
+          "protocol": "https",
+          "host": [
+            "serverest",
+            "dev"
+          ],
+          "path": [
+            "usuarios",
+            "0uxuPY0cbmQhpEz1"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const schema = {",
+              "    \"title\": \"Usuário\",",
+              "    \"type\": \"object\",",
+              "    \"required\": [",
+              "        \"nome\",",
+              "        \"email\",",
+              "        \"password\",",
+              "        \"administrador\",",
+              "        \"_id\"",
+              "    ],",
+              "    \"properties\": {",
+              "        \"nome\": {",
+              "            \"type\": \"string\"",
+              "        },",
+              "        \"email\": {",
+              "            \"type\": \"string\",",
+              "            \"format\": \"email\"",
+              "        },",
+              "        \"password\": {",
+              "            \"type\": \"string\"",
+              "        },",
+              "        \"administrador\": {",
+              "            \"type\": \"string\"",
+              "        },",
+              "        \"_id\": {",
+              "            \"type\": \"string\"",
+              "        }",
+              "    },",
+              "    \"additionalProperties\": false",
+              "};",
+              "",
+              "pm.test(\"Status HTTP deve ser 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Contrato da API deve ser válido\", function () {",
+              "    pm.response.to.have.jsonSchema(schema);",
+              "});",
+              "",
+              "pm.test(\"Nome deve existir\", function () {",
+              "    pm.expect(pm.response.json()).to.have.property(\"nome\");",
+              "});",
+              "",
+              "pm.test(\"Email deve existir\", function () {",
+              "    pm.expect(pm.response.json()).to.have.property(\"email\");",
+              "});",
+              "",
+              "pm.test(\"ID deve existir\", function () {",
+              "    pm.expect(pm.response.json()).to.have.property(\"_id\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
