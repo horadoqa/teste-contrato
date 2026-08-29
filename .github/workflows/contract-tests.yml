@@ -20,12 +20,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install dependencies
         working-directory: teste-contrato-cypress
@@ -40,13 +40,15 @@ jobs:
       - name: Save result
         if: always()
         run: |
-          mkdir -p ../results
+          mkdir -p results
 
           if [ "${{ steps.test.outcome }}" = "success" ]; then
-            echo "ok" > ../results/cypress.txt
+            echo "ok" > results/cypress.txt
           else
-            echo "failed" > ../results/cypress.txt
+            echo "failed" > results/cypress.txt
           fi
+
+          cat results/cypress.txt
 
       - name: Upload Cypress result
         if: always()
@@ -66,12 +68,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install dependencies
         working-directory: teste-contrato-playwright
@@ -90,13 +92,15 @@ jobs:
       - name: Save result
         if: always()
         run: |
-          mkdir -p ../results
+          mkdir -p results
 
           if [ "${{ steps.test.outcome }}" = "success" ]; then
-            echo "ok" > ../results/playwright.txt
+            echo "ok" > results/playwright.txt
           else
-            echo "failed" > ../results/playwright.txt
+            echo "failed" > results/playwright.txt
           fi
+
+          cat results/playwright.txt
 
       - name: Upload Playwright result
         if: always()
@@ -116,10 +120,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -136,13 +140,15 @@ jobs:
       - name: Save result
         if: always()
         run: |
-          mkdir -p ../results
+          mkdir -p results
 
           if [ "${{ steps.test.outcome }}" = "success" ]; then
-            echo "ok" > ../results/robot.txt
+            echo "ok" > results/robot.txt
           else
-            echo "failed" > ../results/robot.txt
+            echo "failed" > results/robot.txt
           fi
+
+          cat results/robot.txt
 
       - name: Upload Robot result
         if: always()
@@ -162,12 +168,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install Newman
         run: npm install -g newman
@@ -181,13 +187,15 @@ jobs:
       - name: Save result
         if: always()
         run: |
-          mkdir -p ../results
+          mkdir -p results
 
           if [ "${{ steps.test.outcome }}" = "success" ]; then
-            echo "ok" > ../results/postman.txt
+            echo "ok" > results/postman.txt
           else
-            echo "failed" > ../results/postman.txt
+            echo "failed" > results/postman.txt
           fi
+
+          cat results/postman.txt
 
       - name: Upload Postman result
         if: always()
@@ -239,13 +247,13 @@ jobs:
           name: postman-result
           path: results/postman
 
-      # ----------------------------------------------------------
-      # Gerar summary.json
-      # ----------------------------------------------------------
+
+      # ========================================================
+      # GERAR JSON
+      # ========================================================
 
       - name: Generate JSON report
         run: |
-          mkdir -p results
 
           CYPRESS=$(cat results/cypress/cypress.txt)
           PLAYWRIGHT=$(cat results/playwright/playwright.txt)
@@ -256,82 +264,95 @@ jobs:
              [ "$PLAYWRIGHT" = "ok" ] && \
              [ "$ROBOT" = "ok" ] && \
              [ "$POSTMAN" = "ok" ]; then
+
             OVERALL="ok"
+
           else
+
             OVERALL="failed"
+
           fi
 
           cat > results/summary.json << EOF
-          {
-            "cypress": "$CYPRESS",
-            "playwright": "$PLAYWRIGHT",
-            "robot": "$ROBOT",
-            "postman": "$POSTMAN",
-            "overall": "$OVERALL"
-          }
-          EOF
+{
+  "cypress": "$CYPRESS",
+  "playwright": "$PLAYWRIGHT",
+  "robot": "$ROBOT",
+  "postman": "$POSTMAN",
+  "overall": "$OVERALL"
+}
+EOF
+
+          echo ""
+          echo "================================"
+          echo "Contract Test Summary"
+          echo "================================"
 
           cat results/summary.json
 
-      # ----------------------------------------------------------
-      # GitHub Actions Job Summary
-      # ----------------------------------------------------------
+
+      # ========================================================
+      # GITHUB STEP SUMMARY
+      # ========================================================
 
       - name: Generate GitHub Summary
         run: |
+
           CYPRESS=$(cat results/cypress/cypress.txt)
           PLAYWRIGHT=$(cat results/playwright/playwright.txt)
           ROBOT=$(cat results/robot/robot.txt)
           POSTMAN=$(cat results/postman/postman.txt)
 
-          echo "# Contract Tests" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Framework | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "# 🧪 Contract Tests" >> "$GITHUB_STEP_SUMMARY"
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          echo "| Framework | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$CYPRESS" = "ok" ]; then
-            echo "| Cypress | ✅ OK |" >> $GITHUB_STEP_SUMMARY
+            echo "| Cypress | ✅ OK |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| Cypress | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Cypress | ❌ FAILED |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "$PLAYWRIGHT" = "ok" ]; then
-            echo "| Playwright | ✅ OK |" >> $GITHUB_STEP_SUMMARY
+            echo "| Playwright | ✅ OK |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| Playwright | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Playwright | ❌ FAILED |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "$ROBOT" = "ok" ]; then
-            echo "| Robot Framework | ✅ OK |" >> $GITHUB_STEP_SUMMARY
+            echo "| Robot Framework | ✅ OK |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| Robot Framework | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Robot Framework | ❌ FAILED |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "$POSTMAN" = "ok" ]; then
-            echo "| Postman / Newman | ✅ OK |" >> $GITHUB_STEP_SUMMARY
+            echo "| Postman / Newman | ✅ OK |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| Postman / Newman | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Postman / Newman | ❌ FAILED |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Overall" >> $GITHUB_STEP_SUMMARY
+          echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$CYPRESS" = "ok" ] && \
              [ "$PLAYWRIGHT" = "ok" ] && \
              [ "$ROBOT" = "ok" ] && \
              [ "$POSTMAN" = "ok" ]; then
 
-            echo "### ✅ All contract tests passed" >> $GITHUB_STEP_SUMMARY
+            echo "## ✅ All contract tests passed" >> "$GITHUB_STEP_SUMMARY"
 
           else
 
-            echo "### ❌ One or more contract tests failed" >> $GITHUB_STEP_SUMMARY
+            echo "## ❌ One or more contract tests failed" >> "$GITHUB_STEP_SUMMARY"
 
           fi
 
-      # ----------------------------------------------------------
-      # Upload relatório
-      # ----------------------------------------------------------
+
+      # ========================================================
+      # UPLOAD FINAL REPORT
+      # ========================================================
 
       - name: Upload contract test report
         if: always()
@@ -340,18 +361,21 @@ jobs:
           name: contract-test-summary
           path: results/summary.json
 
-      # ----------------------------------------------------------
-      # Falhar workflow se algum teste falhou
-      # ----------------------------------------------------------
+
+      # ========================================================
+      # DEFINIR STATUS FINAL DO WORKFLOW
+      # ========================================================
 
       - name: Validate final result
         run: |
-          OVERALL=$(cat results/summary.json | grep '"overall"' | cut -d '"' -f 4)
+
+          OVERALL=$(grep '"overall"' results/summary.json | cut -d '"' -f 4)
+
+          echo "Overall result: $OVERALL"
 
           if [ "$OVERALL" != "ok" ]; then
-            echo "Contract tests failed."
+            echo "❌ Contract tests failed."
             exit 1
           fi
 
-
-          echo "All contract tests passed."
+          echo "✅ All contract tests passed."
