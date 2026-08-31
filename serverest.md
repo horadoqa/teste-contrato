@@ -22,8 +22,8 @@ Imagine que temos dois sistemas:
 
 ```mermaid
 flowchart LR
-    C["<b>Consumidor</b><br/><br/>Front-end<br/>App Mobile"]
-    P["<b>Provedor</b><br/><br/>API<br/>ServeRest"]
+    C["<b>Consumidor</bFront-enApp Mobile"]
+    P["<b>Provedor</bAPServeRest"]
 
     C -->|"HTTP"| P
 ```
@@ -78,10 +78,14 @@ Consumidor
 
 No nosso exemplo, podemos imaginar:
 
-Sistema de Cadastro
-        │
-        │ POST /usuarios
-        ▼
+
+```mermaid
+flowchart TD
+    A["Sistema de Cadastro"]
+    B["POST /usuarios"]
+
+    A --> B
+```
 
 Esse sistema possui expectativas sobre a API.
 
@@ -189,11 +193,12 @@ Supondo que a API retorne algo semelhante a:
 
 O contrato pode estabelecer que a resposta deverá possuir:
 
+```text
 Response
 │
 ├── message : string
 └── _id     : string
-
+```
 
 E também podemos definir:
 
@@ -233,11 +238,11 @@ CONTRATO
 flowchart TD
     A["POST /usuarios"]
 
-    B["<b>Request</b><br/><br/>nome<br/>email<br/>password<br/>administrador"]
+    B["<b>Request</bnomemaipassworadministrador"]
 
     C["<b>ServeRest API</b>"]
 
-    D["<b>Response</b><br/><br/>Status: 201<br/>message: string<br/>_id: string"]
+    D["<b>Response</bStatus: 20message: strin_id: string"]
 
     A --> B
     B --> C
@@ -362,22 +367,22 @@ Essa é uma das principais perguntas que queremos responder com este exercício.
 
 O teste começa antes da implementação do teste automatizado.
 
-Começamos identificando:
+### Começamos identificando:
 
-1. Quem é o consumidor?
-        ↓
-2. Quem é o provedor?
-        ↓
-3. Qual comunicação existe entre eles?
-        ↓
-4. O que o consumidor espera?
-        ↓
-5. Como transformar essas expectativas em um contrato?
-        ↓
-6. Como automatizar a validação?
+```mermaid
+flowchart TD
+    A["Quem é o consumidor?"]
+    B["Quem é o provedor?"]
+    C["Qual comunicação existe entre eles?"]
+    D["O que o consumidor espera?"]
+    E["Como transformar essas expectativaem um contrato?"]
+    F["Como automatizar a validação?"]
 
+    A --> B --> C --> D --> E --> F
 
-Portanto:
+```
+
+### Portanto:
 
 Teste de Contrato começa na definição das expectativas do consumidor sobre a comunicação com o provedor.
 
@@ -389,16 +394,15 @@ Uma abordagem bastante conhecida é utilizar Consumer-Driven Contract Testing.
 
 Nesse modelo:
 
-          CONSUMIDOR
-              │
-              │ define expectativas
-              ▼
-          CONTRACT
-              │
-              │ valida
-              ▼
-           PROVEDOR
+```mermaid
+flowchart TD
+    A["CONSUMIDOR"]
+    B["CONTRACT"]
+    C["PROVEDOR"]
 
+    A -->|define expectativas| B
+    B -->|valida| C
+```
 
 Uma ferramenta bastante utilizada para isso é o Pact.
 
@@ -435,27 +439,16 @@ O contrato pode então ser utilizado para validar o provedor.
 
 Em uma arquitetura utilizando Pact:
 
-┌──────────────────┐
-│    Consumer      │
-│                  │
-│ Teste do cliente │
-└────────┬─────────┘
-         │
-         │ gera
-         ▼
-┌──────────────────┐
-│      Pact        │
-│                  │
-│   Contract       │
-└────────┬─────────┘
-         │
-         │ valida
-         ▼
-┌──────────────────┐
-│     Provider     │
-│                  │
-│    ServeRest     │
-└──────────────────┘
+```mermaid
+flowchart TD
+    A["ConsumeTeste do cliente"]
+    B["PacContract"]
+    C["ProvideServeRest"]
+
+    A -->|gera| B
+    B -->|valida| C
+
+```
 
 
 O objetivo é garantir que uma alteração no provedor não quebre silenciosamente o consumidor.
@@ -480,18 +473,20 @@ Responder:
 ### Parte 2 — Definição do contrato
 
 Os alunos deverão criar uma tabela semelhante a esta:
-|-------|---------------------------------------|
-Item	Expectativa
-Método	POST
-Endpoint	/usuarios
-Content-Type	application/json
-nome	string
-email	string
-password	string
-administrador	string
-Status esperado	201
-message	string
-_id	string
+
+| Item              | Expectativa           |
+|-------------------|-----------------------|
+| Método            | POST                  |
+| Endpoint          | /usuarios             |
+| Content-Type      | application/json      |
+| nome              | string                |
+| email             | string                |
+| password          | string                |
+| administrador     | string                |
+| Status esperado   | 201                   |
+| message           | string                |
+| _id               | string                |
+
 
 ### Parte 3 — Automatização
 
@@ -499,13 +494,13 @@ Depois de definir o contrato, o aluno deverá automatizar a validação.
 
 O teste deverá verificar pelo menos:
 
-✓ Método HTTP
-✓ Endpoint
-✓ Request
-✓ Status HTTP
-✓ Content-Type
-✓ Campos da resposta
-✓ Tipos dos campos
+- Método HTTP
+- Endpoint
+- Request
+- Status HTTP
+- Content-Type
+- Campos da resposta
+- Tipos dos campos
 
 ## 17. Pergunta para discussão em sala
 
@@ -513,9 +508,7 @@ Uma boa discussão para finalizar essa primeira etapa é:
 
 > Se a API continuar retornando HTTP 201, mas alterar o nome de um campo da resposta, temos uma quebra de contrato?
 
-Resposta esperada:
-
-Sim.
+Resposta esperada: `Sim`.
 
 O status HTTP sozinho não representa todo o contrato.
 
@@ -543,16 +536,23 @@ A API pode continuar respondendo 201, mas o consumidor que espera message poder�
 
 Depois da criação de usuário, podemos evoluir o exercício para outros contratos:
 
+```mermaid
+flowchart TB
+    A[ServeRest]
 
-                    ServeRest
-                        │
-          ┌─────────────┼─────────────┐
-          │             │             │
-          ▼             ▼             ▼
-      Usuários       Produtos      Carrinho
-          │             │             │
-          ▼             ▼             ▼
-     POST /usuarios  POST /produtos ...
+    A --> B[Usuários]
+    A --> C[Produtos]
+    A --> D[Carrinho]
+
+    B --> B1[POST /usuarios]
+    C --> C1[POST /produtos]
+    D --> D1[POST /produtos]
+
+    style A fill:#4CAF50,color:#fff,stroke:#2E7D32
+    style B fill:#2196F3,color:#fff,stroke:#1565C0
+    style C fill:#2196F3,color:#fff,stroke:#1565C0
+    style D fill:#2196F3,color:#fff,stroke:#1565C0
+```
 
 
 Uma sequência interessante para as aulas seria:
